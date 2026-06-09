@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Belajar Web — HTML, CSS & JS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d0d;
+      --surface: #161616;
+      --border: #2a2a2a;
+      --text: #e8e8e8;
+      --muted: #666;
+      --html: #f97316;
+      --css: #38bdf8;
+      --js: #facc15;
+      --html-dim: rgba(249,115,22,0.12);
+      --css-dim: rgba(56,189,248,0.12);
+      --js-dim: rgba(250,204,21,0.12);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      min-height: 100vh;
+      padding: 0 0 80px;
+    }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 60px 20px 48px;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 6px 14px;
+      margin-bottom: 24px;
+      letter-spacing: 0.04em;
+    }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .hero h1 {
+      font-size: clamp(28px, 6vw, 52px);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    .hero h1 span.t-html { color: var(--html); }
+    .hero h1 span.t-css  { color: var(--css); }
+    .hero h1 span.t-js   { color: var(--js); }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 420px;
+      margin: 0 auto 32px;
+      line-height: 1.6;
+    }
+
+    .tags {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+    }
+    .tag-html { background: var(--html-dim); color: var(--html); border: 1px solid rgba(249,115,22,0.3); }
+    .tag-css  { background: var(--css-dim);  color: var(--css);  border: 1px solid rgba(56,189,248,0.3); }
+    .tag-js   { background: var(--js-dim);   color: var(--js);   border: 1px solid rgba(250,204,21,0.3); }
+
+    /* LAYOUT */
+    .container { max-width: 860px; margin: 0 auto; padding: 0 20px; }
+
+    /* SECTION HEADER */
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 36px 0 16px;
+    }
+    .section-label span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .section-label .line { flex: 1; height: 1px; background: var(--border); }
+
+    /* MATERI CARDS */
+    .materi-list { display: flex; flex-direction: column; gap: 2px; }
+
+    .materi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .materi-card:hover { border-color: #444; }
+
+    .materi-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .materi-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      min-width: 24px;
+    }
+
+    .materi-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .icon-html { background: var(--html-dim); }
+    .icon-css  { background: var(--css-dim); }
+    .icon-js   { background: var(--js-dim); }
+
+    .materi-info { flex: 1; min-width: 0; }
+    .materi-title { font-size: 14px; font-weight: 600; line-height: 1.3; }
+    .materi-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    .materi-arrow {
+      font-size: 12px;
+      color: var(--muted);
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .materi-card.open .materi-arrow { transform: rotate(180deg); }
+
+    /* PROMPT PANEL */
+    .prompt-panel {
+      display: none;
+      border-top: 1px solid var(--border);
+      padding: 20px;
+      background: #111;
+    }
+    .materi-card.open .prompt-panel { display: block; }
+
+    .prompt-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .prompt-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.7;
+      color: #ccc;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .copy-btn {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .copy-btn:hover { background: #222; border-color: #555; }
+    .copy-btn.copied { color: #22c55e; border-color: #22c55e44; }
+
+    /* OPSIONAL */
+    .tag-opsional {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #a78bfa;
+      background: rgba(167,139,250,0.1);
+      border: 1px solid rgba(167,139,250,0.25);
+      padding: 3px 10px;
+      border-radius: 99px;
+    }
+    .opsional-note {
+      background: rgba(167,139,250,0.07);
+      border: 1px solid rgba(167,139,250,0.2);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #b0a0d0;
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+    .opsional-note strong { color: #a78bfa; }
+    .icon-opsional { background: rgba(167,139,250,0.12); }
+
+    /* FOOTER */
+    .footer {
+      text-align: center;
+      padding-top: 60px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .footer a { color: var(--muted); text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">
+    <span class="dot"></span>
+    Klik materi → Salin prompt → Tempel ke Claude
+  </div>
+  <h1>Belajar <span class="t-html">HTML</span>,<br><span class="t-css">CSS</span> & <span class="t-js">JavaScript</span></h1>
+  <p>Panduan belajar web development dari nol. Setiap materi sudah ada prompt siap pakai untuk Claude.</p>
+  <div class="tags">
+    <span class="tag tag-html">HTML</span>
+    <span class="tag tag-css">CSS</span>
+    <span class="tag tag-js">JavaScript</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- HTML -->
+  <div class="section-label">
+    <span style="color:var(--html)">HTML</span>
+    <div class="line"></div>
+    <span style="color:var(--muted)">Fondasi</span>
+  </div>
+  <div class="materi-list" id="list-html"></div>
+
+  <!-- CSS -->
+  <div class="section-label">
+    <span style="color:var(--css)">CSS</span>
+    <div class="line"></div>
+    <span style="color:var(--muted)">Tampilan</span>
+  </div>
+  <div class="materi-list" id="list-css"></div>
+
+  <!-- JS -->
+  <div class="section-label">
+    <span style="color:var(--js)">JavaScript</span>
+    <div class="line"></div>
+    <span style="color:var(--muted)">Interaktivitas</span>
+  </div>
+  <div class="materi-list" id="list-js"></div>
+
+  <!-- OPSIONAL -->
+  <div class="section-label">
+    <span style="color:#a78bfa">⭐ Lanjutan</span>
+    <div class="line"></div>
+    <span class="tag-opsional">Opsional</span>
+  </div>
+  <div class="opsional-note">
+    Materi ini <strong>tidak wajib</strong> untuk pemula. Pelajari setelah kamu nyaman dengan HTML, CSS, dan JS dasar.
+  </div>
+  <div class="materi-list" id="list-opsional"></div>
+
+  <div class="footer">
+    <p>Salin prompt → Buka percakapan Claude baru → Tempel & mulai belajar 🚀</p>
+  </div>
+</div>
+
+<script>
+const data = {
+  html: [
+    {
+      icon: "🏗️",
+      title: "Struktur Dasar HTML",
+      sub: "DOCTYPE, html, head, body",
+      prompt: `Saya baru mulai belajar HTML dari nol. Tolong ajarkan saya tentang struktur dasar dokumen HTML.
+
+Jelaskan:
+1. Apa itu HTML dan fungsinya
+2. Apa itu <!DOCTYPE html> dan kenapa penting
+3. Tag <html>, <head>, dan <body> — fungsi masing-masing
+4. Contoh dokumen HTML paling sederhana yang valid
+
+Setelah menjelaskan, buatkan contoh kode HTML lengkap dengan komentar penjelasan di setiap barisnya. Lalu beri saya 2 soal latihan sederhana.`
+    },
+    {
+      icon: "📝",
+      title: "Tag Teks & Heading",
+      sub: "h1–h6, p, strong, em, br",
+      prompt: `Saya sudah mengerti struktur dasar HTML. Sekarang ajarkan saya tentang tag-tag untuk teks di HTML.
+
+Jelaskan dan beri contoh:
+1. Heading h1 sampai h6 — perbedaan dan kapan dipakai
+2. Tag paragraf <p>
+3. Tag <strong> dan <em> — perbedaannya dengan bold dan italic biasa
+4. Tag <br> untuk line break
+5. Tag <hr> untuk garis horizontal
+
+Buatkan satu halaman HTML lengkap yang menggunakan semua tag di atas dengan tema bebas (misalnya artikel pendek). Lalu beri saya latihan membuat artikel sederhana dengan HTML.`
+    },
+    {
+      icon: "🔗",
+      title: "Link & Gambar",
+      sub: "a href, img src, alt, target",
+      prompt: `Ajarkan saya cara membuat link dan menampilkan gambar di HTML.
+
+Jelaskan:
+1. Tag <a> — atribut href, target="_blank", rel="noopener"
+2. Perbedaan link relatif vs absolut
+3. Tag <img> — atribut src, alt, width, height
+4. Kenapa atribut alt penting (aksesibilitas & SEO)
+5. Cara membuat gambar yang bisa diklik (link + gambar)
+
+Buatkan contoh halaman HTML yang berisi: beberapa link ke website lain, gambar dari internet (pakai URL publik), dan gambar yang bisa diklik. Tambahkan komentar penjelasan di setiap bagian kodenya.`
+    },
+    {
+      icon: "📋",
+      title: "List & Tabel",
+      sub: "ul, ol, li, table, tr, td, th",
+      prompt: `Ajarkan saya cara membuat list dan tabel di HTML.
+
+Jelaskan:
+1. Unordered list <ul> dan <li>
+2. Ordered list <ol> dan variasinya (type, start)
+3. Nested list (list di dalam list)
+4. Tabel: <table>, <tr>, <th>, <td>
+5. Atribut colspan dan rowspan di tabel
+6. Tag <thead>, <tbody>, <tfoot> untuk struktur tabel
+
+Buatkan contoh halaman dengan: daftar menu makanan (ul), langkah-langkah resep (ol), dan tabel jadwal pelajaran. Beri saya latihan membuat tabel dengan colspan.`
+    },
+    {
+      icon: "📬",
+      title: "Form & Input",
+      sub: "form, input, button, select, textarea",
+      prompt: `Ajarkan saya cara membuat form di HTML.
+
+Jelaskan:
+1. Tag <form> dan atribut action, method (GET vs POST)
+2. Berbagai jenis <input>: text, email, password, number, date, checkbox, radio
+3. Tag <label> dan hubungannya dengan input (atribut for & id)
+4. Tag <textarea> untuk teks panjang
+5. Tag <select> dan <option>
+6. Tombol <button> dan input type="submit"
+7. Atribut required, placeholder, value, disabled
+
+Buatkan contoh form pendaftaran akun lengkap dengan semua elemen di atas. Jelaskan setiap bagian dengan komentar HTML.`
+    },
+    {
+      icon: "🧱",
+      title: "Elemen Semantik",
+      sub: "header, nav, main, section, article, footer, div, span",
+      prompt: `Ajarkan saya tentang elemen semantik HTML5.
+
+Jelaskan:
+1. Apa itu HTML semantik dan kenapa penting
+2. Perbedaan elemen semantik vs non-semantik
+3. Tag: <header>, <nav>, <main>, <section>, <article>, <aside>, <footer>
+4. Kapan pakai <div> dan kapan pakai elemen semantik
+5. Perbedaan <div> (block) vs <span> (inline)
+
+Buatkan contoh layout halaman blog lengkap menggunakan elemen semantik: ada header dengan navigasi, konten utama dengan artikel, sidebar, dan footer. Jelaskan kenapa tiap elemen dipilih.`
+    },
+    {
+      icon: "🎬",
+      title: "Multimedia & Meta",
+      sub: "video, audio, meta, favicon",
+      prompt: `Ajarkan saya cara menyematkan multimedia dan mengatur meta tag di HTML.
+
+Jelaskan:
+1. Tag <video> — atribut src, controls, autoplay, loop, poster
+2. Tag <audio> — atribut src, controls
+3. Tag <source> untuk multiple format
+4. Meta tag penting: charset, viewport, description, og:title (Open Graph)
+5. Cara menambahkan favicon
+6. Tag <iframe> untuk embed konten luar (YouTube, Maps)
+
+Buatkan halaman HTML yang memiliki: video embed YouTube, meta tag lengkap, dan favicon. Jelaskan kenapa meta tag penting untuk SEO.`
+    }
+  ],
+  css: [
+    {
+      icon: "🎨",
+      title: "Pengenalan CSS",
+      sub: "selector, property, value, cara hubungkan ke HTML",
+      prompt: `Saya sudah bisa HTML. Sekarang ajarkan saya CSS dari nol.
+
+Jelaskan:
+1. Apa itu CSS dan fungsinya
+2. 3 cara menulis CSS: inline, internal (<style>), eksternal (.css file)
+3. Sintaks CSS: selector { property: value; }
+4. Selector dasar: tag, class (.), id (#)
+5. Cara menghubungkan file CSS eksternal ke HTML
+
+Buatkan contoh halaman HTML dengan file CSS terpisah (tulis keduanya), yang mengubah: warna teks, warna background, font, dan ukuran teks untuk beberapa elemen. Jelaskan setiap selector yang dipakai.`
+    },
+    {
+      icon: "📦",
+      title: "Box Model",
+      sub: "margin, padding, border, width, height",
+      prompt: `Ajarkan saya tentang CSS Box Model — ini adalah konsep paling penting di CSS.
+
+Jelaskan:
+1. Apa itu Box Model: content, padding, border, margin
+2. Perbedaan margin vs padding
+3. box-sizing: border-box — kenapa ini penting
+4. Properti: width, height, max-width, min-height
+5. Shorthand margin dan padding (1, 2, 3, atau 4 nilai)
+6. Cara debug box model pakai browser DevTools
+
+Buatkan contoh visual yang menunjukkan perbedaan margin, padding, dan border dengan warna berbeda. Lalu beri saya latihan membuat kartu profil dengan box model yang rapi.`
+    },
+    {
+      icon: "🖼️",
+      title: "Warna, Font & Teks",
+      sub: "color, font-family, Google Fonts, text-align",
+      prompt: `Ajarkan saya cara mengatur tampilan teks dan warna di CSS.
+
+Jelaskan:
+1. Cara penulisan warna: nama, hex (#ff0000), rgb(), hsl()
+2. Properti color dan background-color
+3. Font: font-family, font-size, font-weight, font-style
+4. Cara pakai Google Fonts di proyek HTML
+5. Properti teks: text-align, text-decoration, text-transform, line-height, letter-spacing
+6. Properti: opacity dan rgba untuk transparansi
+
+Buatkan halaman artikel yang terlihat profesional dengan: font dari Google Fonts, warna yang harmonis, dan tipografi yang nyaman dibaca. Jelaskan setiap pilihan desainnya.`
+    },
+    {
+      icon: "⬛",
+      title: "Display & Positioning",
+      sub: "block, inline, flex intro, position, z-index",
+      prompt: `Ajarkan saya tentang display dan positioning di CSS.
+
+Jelaskan:
+1. Perbedaan display: block, inline, inline-block, none
+2. Position: static, relative, absolute, fixed, sticky
+3. Properti: top, right, bottom, left
+4. z-index — cara kerjanya
+5. Overflow: hidden, scroll, auto
+
+Buatkan contoh yang mendemonstrasikan:
+- Navbar yang sticky di atas halaman
+- Elemen yang diposisikan absolute di dalam relative container
+- Tombol dengan badge notifikasi (pakai absolute positioning)
+
+Jelaskan kapan harus pakai masing-masing jenis position.`
+    },
+    {
+      icon: "🧲",
+      title: "Flexbox",
+      sub: "display flex, justify-content, align-items, flex-wrap",
+      prompt: `Ajarkan saya Flexbox CSS secara lengkap — ini cara layout paling populer saat ini.
+
+Jelaskan:
+1. Apa itu Flexbox dan kapan dipakai
+2. display: flex — mengaktifkan flexbox
+3. flex-direction: row vs column
+4. justify-content: flex-start, center, flex-end, space-between, space-around
+5. align-items: stretch, center, flex-start, flex-end
+6. flex-wrap: nowrap vs wrap
+7. Properti pada item flex: flex-grow, flex-shrink, flex-basis, order
+
+Buatkan:
+1. Navbar dengan logo di kiri dan menu di kanan (pakai flexbox)
+2. Grid kartu produk yang wrap otomatis
+3. Konten yang di-center sempurna secara vertikal dan horizontal
+
+Jelaskan setiap properti dengan visual yang jelas.`
+    },
+    {
+      icon: "🔲",
+      title: "CSS Grid",
+      sub: "display grid, grid-template, gap, grid-area",
+      prompt: `Ajarkan saya CSS Grid — sistem layout dua dimensi yang powerful.
+
+Jelaskan:
+1. Perbedaan Grid vs Flexbox — kapan pakai yang mana
+2. display: grid
+3. grid-template-columns dan grid-template-rows
+4. Satuan fr (fraction unit)
+5. gap (column-gap dan row-gap)
+6. grid-column dan grid-row untuk spanning
+7. grid-template-areas untuk layout visual
+8. repeat() dan minmax()
+
+Buatkan layout halaman website lengkap dengan Grid yang memiliki: header, navigasi, konten utama, sidebar, dan footer. Gunakan grid-template-areas agar kodenya mudah dibaca.`
+    },
+    {
+      icon: "📱",
+      title: "Responsive Design",
+      sub: "media query, mobile-first, viewport",
+      prompt: `Ajarkan saya cara membuat website yang responsive — tampil bagus di HP maupun laptop.
+
+Jelaskan:
+1. Apa itu responsive design
+2. Meta tag viewport — kenapa wajib ada
+3. Media query: @media (max-width: ...) { }
+4. Breakpoint umum: mobile (< 768px), tablet (768–1024px), desktop (> 1024px)
+5. Pendekatan mobile-first
+6. Satuan relatif: %, vw, vh, em, rem
+7. Gambar responsive: max-width: 100%
+
+Buatkan halaman website yang memiliki:
+- Di mobile: layout satu kolom, navbar jadi hamburger
+- Di desktop: layout dua kolom dengan sidebar
+
+Jelaskan setiap media query yang ditulis.`
+    },
+    {
+      icon: "✨",
+      title: "Transisi & Animasi",
+      sub: "transition, animation, keyframes, hover effect",
+      prompt: `Ajarkan saya cara membuat animasi dan transisi di CSS.
+
+Jelaskan:
+1. transition — cara kerja dan properti: property, duration, timing-function, delay
+2. Timing function: ease, linear, ease-in, ease-out, cubic-bezier
+3. transform: translate, rotate, scale, skew
+4. @keyframes dan animation
+5. Properti animation: name, duration, timing-function, delay, iteration-count, direction
+6. Cara membuat hover effect yang smooth
+
+Buatkan contoh:
+1. Tombol dengan hover effect yang smooth (warna + scale)
+2. Kartu yang flip saat dihover
+3. Loading spinner dengan animasi berputar
+4. Teks yang fade in saat halaman dibuka
+
+Jelaskan kapan sebaiknya pakai transition vs animation.`
+    }
+  ],
+  js: [
+    {
+      icon: "⚡",
+      title: "Pengenalan JavaScript",
+      sub: "variabel, tipe data, console.log, cara hubungkan ke HTML",
+      prompt: `Saya sudah bisa HTML dan CSS. Sekarang ajarkan saya JavaScript dari nol.
+
+Jelaskan:
+1. Apa itu JavaScript dan fungsinya di web
+2. Cara menambahkan JS ke HTML: tag <script>, inline, eksternal
+3. console.log() — cara debug dan melihat output
+4. Variabel: var, let, const — perbedaannya
+5. Tipe data: string, number, boolean, null, undefined
+6. Operator: aritmatika, perbandingan, logika (&&, ||, !)
+7. Template literal (backtick)
+
+Buatkan contoh script JavaScript sederhana yang: menyimpan data di variabel, melakukan perhitungan, dan menampilkan hasilnya di console. Lalu beri saya 3 latihan sederhana.`
+    },
+    {
+      icon: "🔀",
+      title: "Kondisi & Perulangan",
+      sub: "if else, switch, for, while, forEach",
+      prompt: `Ajarkan saya logika kondisi dan perulangan di JavaScript.
+
+Jelaskan:
+1. if, else if, else
+2. Ternary operator: kondisi ? jika benar : jika salah
+3. switch case
+4. for loop — cara kerja dan contoh
+5. while loop
+6. Array dan cara membuatnya
+7. forEach, map, filter pada array
+
+Buatkan contoh program JavaScript yang:
+1. Menentukan nilai huruf dari angka (A/B/C/D/E) pakai if-else
+2. Mencetak angka 1–100, tapi: kelipatan 3 cetak "Fizz", kelipatan 5 cetak "Buzz", keduanya cetak "FizzBuzz"
+3. Memfilter array buah yang namanya panjang lebih dari 5 huruf
+
+Jelaskan setiap konsep dengan jelas.`
+    },
+    {
+      icon: "🧩",
+      title: "Fungsi & Scope",
+      sub: "function, arrow function, parameter, return, scope",
+      prompt: `Ajarkan saya tentang fungsi di JavaScript.
+
+Jelaskan:
+1. Cara membuat function: function declaration vs function expression
+2. Parameter dan argument
+3. Return value
+4. Arrow function (=>) dan perbedaannya dengan function biasa
+5. Default parameter
+6. Scope: global vs local
+7. Closure — pengertian dan contoh sederhana
+
+Buatkan contoh:
+1. Function untuk menghitung luas dan keliling berbagai bangun datar
+2. Function dengan arrow yang memformat nama jadi "Title Case"
+3. Counter menggunakan closure
+
+Beri saya latihan membuat kalkulator sederhana menggunakan fungsi.`
+    },
+    {
+      icon: "🎯",
+      title: "DOM Manipulation",
+      sub: "querySelector, innerHTML, addEventListener, createElement",
+      prompt: `Ajarkan saya cara memanipulasi DOM — ini inti dari JavaScript di browser.
+
+Jelaskan:
+1. Apa itu DOM (Document Object Model)
+2. Cara memilih elemen: getElementById, querySelector, querySelectorAll
+3. Mengubah konten: innerHTML, innerText, textContent
+4. Mengubah style: element.style.property
+5. Menambah/hapus class: classList.add, remove, toggle
+6. Membuat elemen baru: createElement, appendChild, insertBefore
+7. Menghapus elemen: remove()
+8. addEventListener: click, input, submit, keydown
+
+Buatkan contoh interaktif:
+1. Tombol yang mengubah warna background halaman
+2. Input teks yang live preview hasilnya di bawah
+3. Daftar to-do: bisa tambah item baru dan hapus item yang sudah ada
+
+Jelaskan alur kode step by step.`
+    },
+    {
+      icon: "🎪",
+      title: "Event & Interaktivitas",
+      sub: "event listener, form validation, keyboard events",
+      prompt: `Ajarkan saya lebih dalam tentang Events di JavaScript.
+
+Jelaskan:
+1. Jenis-jenis event: mouse (click, dblclick, mouseover), keyboard (keydown, keyup, keypress), form (submit, change, input, focus, blur)
+2. Event object (e) — properti e.target, e.key, e.preventDefault()
+3. Event delegation — kenapa lebih efisien
+4. Cara validasi form dengan JavaScript sebelum submit
+5. stopPropagation dan preventDefault
+
+Buatkan contoh lengkap:
+1. Form pendaftaran dengan validasi JavaScript: nama wajib diisi, email harus valid, password minimal 8 karakter
+2. Fitur pencarian live yang memfilter daftar saat mengetik
+3. Shortcut keyboard: tekan "D" untuk dark mode
+
+Jelaskan kenapa event delegation lebih baik dari menambah listener ke tiap elemen.`
+    },
+    {
+      icon: "🕐",
+      title: "Async JavaScript",
+      sub: "setTimeout, fetch, Promise, async/await",
+      prompt: `Ajarkan saya JavaScript asynchronous — cara JavaScript menangani operasi yang butuh waktu.
+
+Jelaskan:
+1. Synchronous vs Asynchronous — perbedaannya
+2. setTimeout dan setInterval
+3. Callback — apa itu dan masalahnya (callback hell)
+4. Promise — then, catch, finally
+5. async/await — cara modern yang lebih bersih
+6. fetch API — cara mengambil data dari internet
+7. Cara tampilkan loading state dan error handling
+
+Buatkan contoh:
+1. Countdown timer 10 detik dengan setInterval
+2. Fetch data dari API publik (misal: https://jsonplaceholder.typicode.com/posts) dan tampilkan di halaman
+3. Simulasi proses loading dengan Promise dan setTimeout
+
+Jelaskan kenapa kita perlu async programming di web.`
+    },
+    {
+      icon: "🏆",
+      title: "Project: Website Lengkap",
+      sub: "gabungkan HTML + CSS + JS jadi satu website",
+      prompt: `Sekarang saya mau membuat website lengkap menggunakan semua yang sudah saya pelajari: HTML, CSS, dan JavaScript.
+
+Tolong panduin saya membuat website portofolio pribadi dari nol yang memiliki:
+
+HTML:
+- Struktur semantik lengkap (header, nav, main, section, footer)
+- Form kontak
+- Meta tag SEO
+
+CSS:
+- Desain yang modern dan responsive (mobile + desktop)
+- Dark/light mode toggle
+- Animasi dan transisi yang smooth
+- Pakai Flexbox dan Grid
+
+JavaScript:
+- Navigasi aktif berdasarkan scroll
+- Dark/light mode toggle yang berfungsi
+- Form validasi dan feedback
+- Animasi elemen muncul saat di-scroll (Intersection Observer)
+
+Buatkan kode lengkap file per file (index.html, style.css, script.js) dengan komentar penjelasan di setiap bagian penting. Jelaskan juga konsep apa saja yang dipakai di setiap file.`
+    }
+  ]
+};
+
+function buildCards(list, containerId, type) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  list.forEach((item, i) => {
+    const card = document.createElement('div');
+    card.className = 'materi-card';
+
+    // Build structure safely without putting prompt text inside template literal
+    card.innerHTML = `
+      <div class="materi-header">
+        <span class="materi-num">${String(i + 1).padStart(2, '0')}</span>
+        <div class="materi-icon icon-${type}">${item.icon}</div>
+        <div class="materi-info">
+          <div class="materi-title"></div>
+          <div class="materi-sub"></div>
+        </div>
+        <span class="materi-arrow">▼</span>
+      </div>
+      <div class="prompt-panel">
+        <div class="prompt-label">Prompt untuk Claude</div>
+        <div class="prompt-box"></div>
+        <button class="copy-btn">📋 Salin Prompt</button>
+      </div>
+    `;
+
+    // Set text safely via textContent (prevents HTML injection / template literal conflict)
+    card.querySelector('.materi-title').textContent = item.title;
+    card.querySelector('.materi-sub').textContent = item.sub;
+    card.querySelector('.prompt-box').textContent = item.prompt;
+
+    // Store prompt on button as a JS property (not HTML attribute) to avoid encoding issues
+    const btn = card.querySelector('.copy-btn');
+    btn._promptText = item.prompt;
+
+    // Toggle open
+    card.querySelector('.materi-header').addEventListener('click', () => {
+      const isOpen = card.classList.contains('open');
+      document.querySelectorAll('.materi-card.open').forEach(c => c.classList.remove('open'));
+      if (!isOpen) card.classList.add('open');
+    });
+
+    // Copy button
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      navigator.clipboard.writeText(btn._promptText).then(() => {
+        btn.textContent = '✅ Tersalin!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = '📋 Salin Prompt';
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(() => {
+        // Fallback untuk browser yang tidak support clipboard API
+        const ta = document.createElement('textarea');
+        ta.value = btn._promptText;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        btn.textContent = '✅ Tersalin!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = '📋 Salin Prompt';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    });
+
+    container.appendChild(card);
+  });
+}
+
+buildCards(data.html, 'list-html', 'html');
+buildCards(data.css,  'list-css',  'css');
+buildCards(data.js,   'list-js',   'js');
+
+const opsional = [
+  {
+    icon: "🎭",
+    title: "CSS Pseudo-class & Pseudo-element",
+    sub: ":hover, :focus, :nth-child, ::before, ::after",
+    prompt: `Ajarkan saya tentang pseudo-class dan pseudo-element di CSS.
+
+Jelaskan:
+1. Apa itu pseudo-class dan cara pakainya
+2. Pseudo-class umum: :hover, :focus, :active, :visited
+3. Pseudo-class struktural: :first-child, :last-child, :nth-child(n)
+4. :not() — untuk mengecualikan elemen
+5. Pseudo-element: ::before dan ::after
+6. Properti content pada ::before / ::after
+7. Pseudo-element lain: ::first-line, ::selection, ::placeholder
+
+Buatkan contoh:
+1. Tombol dengan efek hover & active yang smooth
+2. Daftar dengan nomor custom pakai ::before (tanpa tag <ol>)
+3. Input dengan placeholder yang berubah warna saat focus
+4. Tabel dengan baris selang-seling warna pakai :nth-child
+
+Jelaskan kapan pseudo-element lebih berguna dari menambah elemen HTML baru.`
+  },
+  {
+    icon: "🎨",
+    title: "CSS Variables & Custom Properties",
+    sub: "--variable, var(), tema warna, dark mode",
+    prompt: `Ajarkan saya CSS Custom Properties (CSS Variables).
+
+Jelaskan:
+1. Apa itu CSS Variables dan keuntungannya
+2. Cara deklarasi: --nama-variabel: nilai;
+3. Cara pakai: var(--nama-variabel)
+4. Scope: variabel di :root vs di dalam selector tertentu
+5. Fallback value: var(--warna, #000)
+6. Cara update variabel dengan JavaScript
+7. Perbedaan CSS Variables vs variabel di Sass/SCSS
+
+Buatkan contoh:
+1. Sistem warna dengan CSS Variables (primary, secondary, background, text)
+2. Toggle dark mode / light mode menggunakan CSS Variables + JavaScript
+3. Komponen kartu yang warnanya bisa diubah hanya dengan ganti satu variabel
+
+Jelaskan kenapa CSS Variables lebih fleksibel dari nilai hardcoded.`
+  },
+  {
+    icon: "📦",
+    title: "JS: Object & Array Methods Lanjutan",
+    sub: "map, filter, reduce, spread, destructuring",
+    prompt: `Ajarkan saya metode Array dan Object lanjutan di JavaScript.
+
+Jelaskan dengan contoh nyata:
+1. Array methods: map(), filter(), reduce(), find(), some(), every(), flat()
+2. Chaining methods: filter().map().reduce()
+3. Spread operator (...) untuk array dan object
+4. Rest parameter (...args) di function
+5. Destructuring array: const [a, b] = array
+6. Destructuring object: const { nama, umur } = orang
+7. Object methods: Object.keys(), Object.values(), Object.entries()
+8. Optional chaining (?.) dan nullish coalescing (??)
+
+Buatkan contoh program yang:
+1. Mengolah data daftar siswa (filter lulus, hitung rata-rata, urutkan)
+2. Merge dua object dengan spread
+3. Destructuring data dari API response
+
+Jelaskan perbedaan map vs forEach — kapan pakai yang mana.`
+  },
+  {
+    icon: "💾",
+    title: "JS: localStorage & sessionStorage",
+    sub: "simpan data di browser, JSON.stringify, JSON.parse",
+    prompt: `Ajarkan saya cara menyimpan data di browser dengan localStorage dan sessionStorage.
+
+Jelaskan:
+1. Apa itu Web Storage dan bedanya dengan cookie
+2. Perbedaan localStorage vs sessionStorage
+3. Method: setItem(), getItem(), removeItem(), clear()
+4. Menyimpan object/array: JSON.stringify() dan JSON.parse()
+5. Kapasitas penyimpanan dan batasannya
+6. Kapan sebaiknya pakai localStorage vs database server
+
+Buatkan contoh lengkap:
+1. To-do list yang datanya tersimpan walaupun browser ditutup
+2. Form yang menyimpan draft otomatis ke localStorage
+3. Pengaturan tema (dark/light) yang diingat browser
+
+Jelaskan juga risiko keamanan penyimpanan data sensitif di localStorage.`
+  },
+  {
+    icon: "🧩",
+    title: "JS: Modules (import & export)",
+    sub: "export, import, pemisahan file JS",
+    prompt: `Ajarkan saya cara menggunakan JavaScript Modules untuk memisahkan kode ke banyak file.
+
+Jelaskan:
+1. Kenapa kita perlu modules (masalah spaghetti code)
+2. Named export: export const, export function
+3. Default export: export default
+4. Named import: import { fungsi } from './file.js'
+5. Default import: import namaApa from './file.js'
+6. Import semua: import * as utils from './utils.js'
+7. Cara pakai di HTML: <script type="module">
+8. Dynamic import: import('./file.js').then(...)
+
+Buatkan contoh proyek kecil yang dipecah jadi beberapa file:
+- utils.js (fungsi-fungsi helper)
+- data.js (data dan konstanta)
+- ui.js (fungsi manipulasi DOM)
+- main.js (file utama yang mengimpor semuanya)
+
+Jelaskan kenapa modules membuat kode lebih mudah di-maintain.`
+  },
+  {
+    icon: "🚀",
+    title: "Deploy Website ke Internet",
+    sub: "GitHub Pages, Netlify, domain gratis",
+    prompt: `Ajarkan saya cara mempublikasikan website ke internet secara gratis.
+
+Jelaskan:
+1. Apa itu hosting dan domain
+2. Cara deploy ke GitHub Pages (step by step):
+   - Buat akun GitHub
+   - Buat repository baru
+   - Upload file HTML/CSS/JS
+   - Aktifkan GitHub Pages di settings
+3. Cara deploy ke Netlify (alternatif, lebih mudah):
+   - Drag & drop folder
+   - Dapat URL gratis otomatis
+4. Cara menghubungkan domain custom (opsional)
+5. Perbedaan GitHub Pages vs Netlify vs Vercel
+
+Buatkan panduan langkah demi langkah yang sangat detail untuk pemula yang baru pertama kali deploy website. Jelaskan juga apa yang harus dipersiapkan sebelum deploy (struktur folder, nama file index.html, dsb).`
+  }
+];
+
+buildCards(opsional, 'list-opsional', 'opsional');
+</script>
+</body>
+</html>
